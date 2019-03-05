@@ -7,45 +7,6 @@ import os
 import subprocess
 import re
 
-re_warning = re.compile("Warning|Error")
-re_full = re.compile("Overfull|Underfull")
-re_path = re.compile("(\\./.*?\\.(pygtex|pygstyle|tex|pdf|png|toc|sty|w18))")
-re_run = re.compile("Run number [0-9]+ of rule")
-
-todo_words = ["TODO", "FIXME", "todo", "fixme", "Todo", "Fixme"]
-re_todo = re.compile("|".join(todo_words))
-
-cmd = sys.argv[1:]
-
-verbose = False
-if len(cmd) > 0 and cmd[0] == "-V":
-    verbose = True
-    cmd = cmd[1:]
-
-print_all_files = verbose
-print_full_boxes = verbose
-
-print("Wrapper script executes: {}".format(cmd))
-
-env = os.environ.copy()
-env["max_print_line"] = "10000"
-
-process = subprocess.Popen(cmd,
-                           stdout=subprocess.PIPE,
-                           stderr=subprocess.STDOUT,
-                           env=env)
-
-output = []
-for line in iter(process.stdout.readline, b''):
-    clean_line = line.decode("utf-8", "backslashreplace")
-    output.append(clean_line)
-    print(clean_line.strip()),
-
-process.stdout.close()
-returncode = process.wait()
-
-print("---Warnings and Errors ---------------------------------------------------------")
-
 CEND      = '\33[0m'
 CBOLD     = '\33[1m'
 CITALIC   = '\33[3m'
@@ -95,6 +56,45 @@ def colorize(text, colorcode):
         return colorcode + str(text) + CEND
     else:
         return str(text)
+
+re_warning = re.compile("Warning|Error")
+re_full = re.compile("Overfull|Underfull")
+re_path = re.compile("(\\./.*?\\.(pygtex|pygstyle|tex|pdf|png|toc|sty|w18))")
+re_run = re.compile("Run number [0-9]+ of rule")
+
+todo_words = ["TODO", "FIXME", "todo", "fixme", "Todo", "Fixme"]
+re_todo = re.compile("|".join(todo_words))
+
+cmd = sys.argv[1:]
+
+verbose = False
+if len(cmd) > 0 and cmd[0] == "-V":
+    verbose = True
+    cmd = cmd[1:]
+
+print_all_files = verbose
+print_full_boxes = verbose
+
+#print("Wrapper script executes: {}".format(cmd))
+
+env = os.environ.copy()
+env["max_print_line"] = "10000"
+
+process = subprocess.Popen(cmd,
+                           stdout=subprocess.PIPE,
+                           stderr=subprocess.STDOUT,
+                           env=env)
+
+output = []
+for line in iter(process.stdout.readline, b''):
+    clean_line = line.decode("utf-8", "backslashreplace")
+    output.append(clean_line)
+    print(clean_line.strip()),
+
+process.stdout.close()
+returncode = process.wait()
+
+print(colorize("---Warnings and Errors---", CREDBG))
 
 last_file = None
 current_file = "asdf"
