@@ -57,7 +57,7 @@ def colorize(text, colorcode):
     else:
         return str(text)
 
-re_warning = re.compile("Warning|Error")
+re_warning = re.compile("^!|Warning|Error")
 re_full = re.compile("Overfull|Underfull")
 re_path = re.compile("(\\./.*?\\.(pygtex|pygstyle|tex|pdf|png|toc|sty|w18))")
 re_run = re.compile("Run number [0-9]+ of rule")
@@ -131,6 +131,8 @@ for line in output:
     if re_warning.search(line):
         line = line.replace("Warning", colorize("Warning", CYELLOW))
         line = line.replace("Error", colorize("Error", CRED))
+        if line.startswith("!"):
+            line = colorize("Error", CRED) + ": " + line
         print_warning(line)
     if print_full_boxes and re_full.search(line):
         line = line.replace("Overfull", colorize("Overfull", CBLUE))
