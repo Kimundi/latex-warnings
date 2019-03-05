@@ -45,4 +45,4 @@ Increases verbosity:
 - It collects the combined output, and scans it for warnings and errors.
 - It will try to open all `.tex` files encountered in the output
   and case-insensitive search it for `todo` or `fixme` annotations.
-- It will _colorize_ the processed list ot warnings to make it easier to read.
+- It will _colorize_ the processed list of warnings to make it easier to read.
