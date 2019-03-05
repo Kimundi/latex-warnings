@@ -7,12 +7,12 @@ and appends to the output in a better understandable format.
 Simply prefix your tex-output producing command with this wrapper:
 
 ```
-latex_wrapper.py latex ...
-latex_wrapper.py latexmk ...
-latex_wrapper.py pdflatex ...
+latex_warnings.py latex ...
+latex_warnings.py latexmk ...
+latex_warnings.py pdflatex ...
 ```
 
-## Example Output:
+## Output:
 
 ```
 <normal command output>
@@ -21,14 +21,14 @@ File ./main.tex
   Latex Warning [...]
   Latex Warning [...]
   Overfull [...]
-Fill ./subfile.tex
+File ./subfile.tex
   ! Error [...]
 ```
 
 ## Options:
 
 ```
-latex_wrapper.py -V COMMAND...
+latex_warnings.py -V COMMAND...
 ```
 
 Increases verbosity:
