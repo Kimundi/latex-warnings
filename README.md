@@ -43,3 +43,5 @@ Increases verbosity:
 - It capture stderr and redirects it into the stdout stream.
 - It replaces the default 80-column line width of tex commands with a large value via a environment variable to effectively disable it.
 - It collects the combined output, and scans it for warnings and errors.
+- It will try to open all `.tex` files encountered in the output
+  and case-insensitive search it for `todo` or `fixme` annotations.
