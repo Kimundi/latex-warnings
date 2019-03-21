@@ -89,6 +89,8 @@ parser.add_argument('-f', '--all-files', action='store_true',
 
 parser.add_argument('-n', '--no-raw', action='store_true',
                     help='do not output the raw stdout and stderr of the wrapped process.')
+parser.add_argument('-l', '--last-run', action='store_true',
+                    help='only output warnings from the last run. This conflicts with -i.')
 
 parser.add_argument('-a', '--all', action='store_true',
                     help='enables all generally useful warnings. implies -webt.')
@@ -107,7 +109,8 @@ print_errors     = args.errors    or args.all or args.verbose
 print_all_files  = args.all_files             or args.verbose
 
 # More complicated features
-print_no_raw = args.no_raw
+print_no_raw   = args.no_raw
+print_last_run = args.last_run
 
 # Ensure latex command does not cause early line breaks
 env = os.environ.copy()
@@ -128,13 +131,23 @@ for line in iter(process.stdout.readline, b''):
 process.stdout.close()
 returncode = process.wait()
 
-print(colorize("---Warnings and Errors---", CREDBG))
+print(colorize("---latex_warnings output---", CREDBG))
 
+last_run_buffer = ""
 last_file = None
 current_file = "asdf"
+
+def rprint(s):
+    global last_run_buffer
+    if not print_last_run:
+        print("{}".format(s))
+    else:
+        last_run_buffer += "{}\n".format(s)
+
 for line in output:
     if re_run.match(line):
-        print(colorize(line.strip(), CBEIGEBG))
+        last_run_buffer = ""
+        rprint(colorize(line.strip(), CBEIGEBG))
 
     def print_warning(warn_text):
         global last_file
@@ -143,15 +156,15 @@ for line in output:
 
         if current_file != last_file:
             if not print_all_files:
-                print("File {}".format(colorize(last_file, CGREEN)))
+                rprint("File {}".format(colorize(last_file, CGREEN)))
             current_file = last_file
-        print("  " + warn_text.strip())
+        rprint("  " + warn_text.strip())
 
     for m in re_path.findall(line):
         last_file_candidate = str(m[0])
         if print_all_files:
             last_file = last_file_candidate
-            print("File {}".format(colorize(last_file, CGREEN)))
+            rprint("File {}".format(colorize(last_file, CGREEN)))
         if last_file_candidate.endswith(".tex"):
             last_file = last_file_candidate
             if print_todo and os.path.isfile(last_file):
@@ -178,5 +191,8 @@ for line in output:
 
     if found:
         print_warning(line)
+
+if print_last_run:
+    print(last_run_buffer)
 
 exit(returncode)
