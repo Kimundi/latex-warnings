@@ -147,7 +147,7 @@ def rprint(s):
 for line in output:
     if re_run.match(line):
         last_run_buffer = ""
-        rprint(colorize(line.strip(), CBEIGEBG))
+        print(colorize(line.strip(), CBEIGEBG))
 
     def print_warning(warn_text):
         global last_file
