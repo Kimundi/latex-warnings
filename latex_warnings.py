@@ -91,6 +91,9 @@ parser.add_argument('-n', '--no-raw', action='store_true',
                     help='do not output the raw stdout and stderr of the wrapped process.')
 parser.add_argument('-l', '--last-run', action='store_true',
                     help='only output warnings from the last run. This conflicts with -i.')
+parser.add_argument('-i', '--interleaved', action='store_true',
+                    help='print the output interleaved with the raw output. '
+                    'This allows interactive and endless commandlines.')
 
 parser.add_argument('-a', '--all', action='store_true',
                     help='enables all generally useful warnings. implies -webt.')
@@ -109,30 +112,11 @@ print_errors     = args.errors    or args.all or args.verbose
 print_all_files  = args.all_files             or args.verbose
 
 # More complicated features
-print_no_raw   = args.no_raw
-print_last_run = args.last_run
+print_no_raw      = args.no_raw
+print_last_run    = args.last_run
+print_interleaved = args.interleaved
 
-# Ensure latex command does not cause early line breaks
-env = os.environ.copy()
-env["max_print_line"] = "10000"
-
-process = subprocess.Popen(cmd,
-                           stdout=subprocess.PIPE,
-                           stderr=subprocess.STDOUT,
-                           env=env)
-
-output = []
-for line in iter(process.stdout.readline, b''):
-    clean_line = line.decode("utf-8", "backslashreplace")
-    output.append(clean_line)
-    if not print_no_raw:
-        print(clean_line.strip()),
-
-process.stdout.close()
-returncode = process.wait()
-
-print(colorize("---latex_warnings output---", CREDBG))
-
+# Setup line processing environment
 last_run_buffer = ""
 last_file = None
 current_file = "asdf"
@@ -144,7 +128,11 @@ def rprint(s):
     else:
         last_run_buffer += "{}\n".format(s)
 
-for line in output:
+def handle_line(line):
+    global last_run_buffer
+    global last_file
+    global current_file
+
     if re_run.match(line):
         last_run_buffer = ""
         print(colorize(line.strip(), CBEIGEBG))
@@ -192,7 +180,40 @@ for line in output:
     if found:
         print_warning(line)
 
-if print_last_run:
-    print(last_run_buffer)
+try:
+    # Ensure latex command does not cause early line breaks
+    env = os.environ.copy()
+    env["max_print_line"] = "10000"
 
-exit(returncode)
+    # Run command
+    process = subprocess.Popen(cmd,
+                            stdout=subprocess.PIPE,
+                            stderr=subprocess.STDOUT,
+                            env=env)
+
+    print(colorize("---latex_warnings output---", CREDBG))
+    output = []
+    for line in iter(process.stdout.readline, b''):
+        clean_line = line.decode("utf-8", "backslashreplace")
+        if not print_no_raw:
+            print(clean_line.strip())
+        if print_interleaved:
+            handle_line(clean_line)
+        else:
+            output.append(clean_line)
+
+    process.stdout.close()
+    returncode = process.wait()
+
+    if not print_interleaved:
+        for line in output:
+            handle_line(line)
+
+    if print_last_run:
+        print(last_run_buffer)
+
+    exit(returncode)
+except KeyboardInterrupt:
+    exit(1)
+
+exit(0)
