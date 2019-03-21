@@ -16,7 +16,7 @@ latex_warnings.py pdflatex ...
 
 ```
 <normal command output>
----Warnings and Errors---
+---latex_warnings output---
 File ./main.tex
   Latex Warning [...]
   Latex Warning [...]
@@ -25,17 +25,28 @@ File ./subfile.tex
   ! Error [...]
 ```
 
-## Options:
+## CLI:
 
 ```
-latex_warnings.py -V COMMAND...
+usage: latex_warnings [options] <latex commandline>...
+
+Wraps a latex commandline, and parses its output to produce more readable
+warnings. Example: `latex_warnings -a latexmk -pdf foo.tex`
+
+optional arguments:
+  -h, --help       show this help message and exit
+  -w, --warnings   output warnings.
+  -e, --errors     output errors.
+  -b, --warn-box   output overfull and underfull box warnings.
+  -t, --warn-todo  output todo warnings.
+  -f, --all-files  print all processed file paths, not just *.tex.
+  -n, --no-raw     do not output the raw stdout and stderr of the wrapped
+                   process.
+  -l, --last-run   only output warnings from the last run. This conflicts with
+                   -i.
+  -a, --all        enables all generally useful warnings. implies -webt.
+  -V, --verbose    enables all possible warnings. implies -af.
 ```
-
-Increases verbosity:
-
-- prints Over-/Underfull warnings.
-- prints all filenames, not just tex files.
-
 
 ## How it works:
 
