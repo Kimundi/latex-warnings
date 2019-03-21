@@ -68,33 +68,31 @@ todo_words = ["TODO", "FIXME", "todo", "fixme", "Todo", "Fixme"]
 re_todo = re.compile("|".join(todo_words))
 
 
-parser = argparse.ArgumentParser(description='Process some integers.')
+parser = argparse.ArgumentParser(
+    description='Process some integers.',
+    usage='%(prog)s [options] <latex commandline>...'
+)
 parser.add_argument('-w', '--warnings', action='store_true',
-                    help='output warnings')
+                    help='output warnings.')
 parser.add_argument('-e', '--errors', action='store_true',
-                    help='output errors')
+                    help='output errors.')
 
 parser.add_argument('-b', '--warn-box', action='store_true',
-                    help='output overfull and underfull box warnings')
+                    help='output overfull and underfull box warnings.')
 parser.add_argument('-t', '--warn-todo', action='store_true',
-                    help='output todo warnings')
+                    help='output todo warnings.')
 parser.add_argument('-f', '--all-files', action='store_true',
-                    help='print all processed file paths, not just *.tex')
+                    help='print all processed file paths, not just *.tex.')
 
 parser.add_argument('-n', '--no-raw', action='store_true',
-                    help='do not output the raw stdout and stderr of the wrapped process')
+                    help='do not output the raw stdout and stderr of the wrapped process.')
 
 parser.add_argument('-a', '--all', action='store_true',
-                    help='enables -webt')
+                    help='enables all generally useful warnings. implies -webt.')
 parser.add_argument('-V', '--verbose', action='store_true',
-                    help='enables -webtf')
+                    help='enables all possible warnings. implies -af.')
 
-parser.add_argument('latex_commandline',
-                    help='the latex commandline to wrap')
-#parser.add_argument('command_args', nargs='*',
-#                    help='arguments for the latex command')
-
-(args, extra) = parser.parse_known_args()
+(args, cmd) = parser.parse_known_args()
 
 # Optional warnings
 print_full_boxes = args.warn_box  or args.all or args.verbose
@@ -107,10 +105,6 @@ print_all_files  = args.all_files             or args.verbose
 
 # More complicated features
 print_no_raw = args.no_raw
-
-# Chained command
-cmd = [args.latex_commandline] + extra
-#print("Wrapper script executes: {}".format(cmd))
 
 # Ensure latex command does not cause early line breaks
 env = os.environ.copy()
