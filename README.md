@@ -34,18 +34,20 @@ Wraps a latex commandline, and parses its output to produce more readable
 warnings. Example: `latex_warnings -a latexmk -pdf foo.tex`
 
 optional arguments:
-  -h, --help       show this help message and exit
-  -w, --warnings   output warnings.
-  -e, --errors     output errors.
-  -b, --warn-box   output overfull and underfull box warnings.
-  -t, --warn-todo  output todo warnings.
-  -f, --all-files  print all processed file paths, not just *.tex.
-  -n, --no-raw     do not output the raw stdout and stderr of the wrapped
-                   process.
-  -l, --last-run   only output warnings from the last run. This conflicts with
-                   -i.
-  -a, --all        enables all generally useful warnings. implies -webt.
-  -V, --verbose    enables all possible warnings. implies -af.
+  -h, --help         show this help message and exit
+  -w, --warnings     output warnings.
+  -e, --errors       output errors.
+  -b, --warn-box     output overfull and underfull box warnings.
+  -t, --warn-todo    output todo warnings.
+  -f, --all-files    print all processed file paths, not just *.tex.
+  -n, --no-raw       do not output the raw stdout and stderr of the wrapped
+                     process.
+  -l, --last-run     only output warnings from the last run. This conflicts
+                     with -i.
+  -i, --interleaved  print the output interleaved with the raw output. This
+                     allows interactive and endless commandlines.
+  -a, --all          enables all generally useful warnings. implies -webt.
+  -V, --verbose      enables all possible warnings. implies -af.
 ```
 
 ## How it works:
