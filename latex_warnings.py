@@ -180,6 +180,9 @@ def handle_line(line):
     if found:
         print_warning(line)
 
+def print_header_line():
+    print(colorize("---latex_warnings output---", CREDBG))
+
 try:
     # Ensure latex command does not cause early line breaks
     env = os.environ.copy()
@@ -191,7 +194,8 @@ try:
                             stderr=subprocess.STDOUT,
                             env=env)
 
-    print(colorize("---latex_warnings output---", CREDBG))
+    if print_interleaved:
+        print_header_line()
     output = []
     for line in iter(process.stdout.readline, b''):
         clean_line = line.decode("utf-8", "backslashreplace")
@@ -206,6 +210,7 @@ try:
     returncode = process.wait()
 
     if not print_interleaved:
+        print_header_line()
         for line in output:
             handle_line(line)
 
