@@ -69,7 +69,10 @@ re_todo = re.compile("|".join(todo_words))
 
 
 parser = argparse.ArgumentParser(
-    description='Process some integers.',
+    description='''
+Wraps a latex commandline, and parses its output to produce
+more readable warnings. Example: `%(prog)s -a latexmk -pdf foo.tex`
+    ''',
     usage='%(prog)s [options] <latex commandline>...'
 )
 parser.add_argument('-w', '--warnings', action='store_true',
