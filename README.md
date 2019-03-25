@@ -2,7 +2,7 @@
 A commandline wrapper for a latex process that parses errors and warnings,
 and appends to the output in a better understandable format.
 
-## Usage:
+## Usage
 
 Simply prefix your tex-output producing command with this wrapper:
 
@@ -12,20 +12,11 @@ latex_warnings.py latexmk ...
 latex_warnings.py pdflatex ...
 ```
 
-## Output:
+## Example Output
 
-```
-<normal command output>
----latex_warnings output---
-File ./main.tex
-  Latex Warning [...]
-  Latex Warning [...]
-  Overfull [...]
-File ./subfile.tex
-  ! Error [...]
-```
+![Example](example/example.png)
 
-## CLI:
+## CLI
 
 ```
 usage: latex_warnings [options] <latex commandline>...
@@ -50,7 +41,7 @@ optional arguments:
   -V, --verbose      enables all possible warnings. implies -af.
 ```
 
-## How it works:
+## How it works
 
 - It runs the command, and lets it print to stdout as usual.
 - It capture stderr and redirects it into the stdout stream.
