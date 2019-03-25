@@ -117,9 +117,14 @@ print_last_run    = args.last_run
 print_interleaved = args.interleaved
 
 # Setup line processing environment
-last_run_buffer = ""
-last_file = None
-current_file = "asdf"
+def reset_run_state():
+    global last_run_buffer
+    global last_file
+    global current_file
+    last_run_buffer = ""
+    last_file = None
+    current_file = "asdf"
+reset_run_state()
 
 def rprint(s):
     global last_run_buffer
@@ -134,7 +139,7 @@ def handle_line(line):
     global current_file
 
     if re_run.match(line):
-        last_run_buffer = ""
+        reset_run_state()
         print(colorize(line.strip(), CBEIGEBG))
 
     def print_warning(warn_text):
