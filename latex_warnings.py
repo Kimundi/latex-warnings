@@ -61,7 +61,7 @@ def colorize(text, colorcode):
 re_error = re.compile("^!|Error")
 re_warning = re.compile("Warning")
 re_full = re.compile("Overfull|Underfull")
-re_path = re.compile("(\\./.*?\\.(pygtex|pygstyle|tex|pdf|png|toc|sty|w18))")
+re_path = re.compile("(\\./\S*?\\.(pygtex|pygstyle|tex|pdf|png|toc|sty|w18))")
 re_run = re.compile("Run number [0-9]+ of rule")
 
 todo_words = ["TODO", "FIXME", "todo", "fixme", "Todo", "Fixme"]
